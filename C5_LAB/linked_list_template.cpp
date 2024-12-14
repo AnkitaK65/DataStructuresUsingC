@@ -13,13 +13,10 @@ using namespace std;
 
 // Node structure
 template <typename T>
-class Node {
-public:
+struct Node {
     T data;
     Node* next;
-
-    // Constructor
-    Node(T value) : data(value), next(nullptr) {}
+    Node(T val) : data(val), next(nullptr) {}
 };
 
 // Linked List class
@@ -34,164 +31,190 @@ public:
 
     // Destructor
     ~LinkedList() {
-        Node<T>* current = head;
-        while (current) {
-            Node<T>* temp = current;
-            current = current->next;
+        while (head) {
+            Node<T>* temp = head;
+            head = head->next;
             delete temp;
         }
     }
 
-    // Insert a new element at the end
-    void insert(T value) {
-        Node<T>* newNode = new Node<T>(value);
+    // Insert at the end of the list
+    void insert(T data) {
+        Node<T>* newNode = new Node<T>(data);
         if (!head) {
             head = newNode;
-            return;
+        } else {
+            Node<T>* temp = head;
+            while (temp->next) {
+                temp = temp->next;
+            }
+            temp->next = newNode;
         }
-        Node<T>* current = head;
-        while (current->next) {
-            current = current->next;
-        }
-        current->next = newNode;
     }
 
-    // Delete a node with a given value
-    void remove(T value) {
+    // Delete an element from the list
+    void remove(T key) {
         if (!head) {
             cout << "List is empty.\n";
             return;
         }
-        if (head->data == value) {
+
+        // If the element to be deleted is the head
+        if (head->data == key) {
             Node<T>* temp = head;
             head = head->next;
             delete temp;
             return;
         }
-        Node<T>* current = head;
-        while (current->next && current->next->data != value) {
-            current = current->next;
+
+        // Find the element to delete
+        Node<T>* temp = head;
+        while (temp->next && temp->next->data != key) {
+            temp = temp->next;
         }
-        if (!current->next) {
+
+        // If the element was not found
+        if (!temp->next) {
             cout << "Element not found in the list.\n";
             return;
         }
-        Node<T>* temp = current->next;
-        current->next = current->next->next;
-        delete temp;
+
+        // Delete the node
+        Node<T>* toDelete = temp->next;
+        temp->next = temp->next->next;
+        delete toDelete;
     }
 
-    // Search for a node with a given value
-    bool search(T value) {
-        Node<T>* current = head;
-        while (current) {
-            if (current->data == value) {
+    // Search for an element in the list
+    bool search(T key) {
+        Node<T>* temp = head;
+        while (temp) {
+            if (temp->data == key) {
                 return true;
             }
-            current = current->next;
+            temp = temp->next;
         }
         return false;
     }
 
-    // Reverse the linked list
+    // Reverse the list
     void reverse() {
         Node<T>* prev = nullptr;
-        Node<T>* current = head;
+        Node<T>* curr = head;
         Node<T>* next = nullptr;
-        while (current) {
-            next = current->next;
-            current->next = prev;
-            prev = current;
-            current = next;
+
+        while (curr) {
+            next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
         }
+
         head = prev;
     }
 
-    // Concatenate another linked list
+    // Concatenate another linked list (Deep Copy)
     void concatenate(const LinkedList<T>& other) {
+        if (!other.head) return; // Nothing to concatenate if the other list is empty
         if (!head) {
             head = other.head;
             return;
         }
-        Node<T>* current = head;
-        while (current->next) {
+
+        Node<T>* current = other.head;
+        while (current) {
+            this->insert(current->data); // Insert a copy of each node
             current = current->next;
         }
-        current->next = other.head;
     }
 
-    // Overload the + operator to concatenate two linked lists
+    // Overload the + operator for concatenation (Deep Copy)
     LinkedList<T> operator+(const LinkedList<T>& other) {
         LinkedList<T> result;
+
+        // Copy elements from the current list
         Node<T>* current = head;
         while (current) {
             result.insert(current->data);
             current = current->next;
         }
+
+        // Copy elements from the other list
         current = other.head;
         while (current) {
             result.insert(current->data);
             current = current->next;
         }
+
         return result;
     }
 
-    // Display the linked list
-    void display() {
-        Node<T>* current = head;
-        while (current) {
-            cout << current->data << " -> ";
-            current = current->next;
+    // Print the list
+    void print() {
+        Node<T>* temp = head;
+        while (temp) {
+            cout << temp->data << " -> ";
+            temp = temp->next;
         }
-        cout << "NULL\n";
+        cout << "NULL" << endl;
     }
 };
 
+// Main function
 int main() {
-    LinkedList<int> list1, list2;
+    LinkedList<int> list1;
+    LinkedList<int> list2;
 
-    // Insert elements into the first list
+    // Inserting elements into list 1
     list1.insert(10);
     list1.insert(20);
     list1.insert(30);
 
-    cout << "List 1: ";
-    list1.display();
-
-    // Insert elements into the second list
+    // Inserting elements into list 2
     list2.insert(40);
     list2.insert(50);
 
+    cout << "List 1: ";
+    list1.print();
     cout << "List 2: ";
-    list2.display();
+    list2.print();
 
-    // Concatenate two lists using a function
+    // Concatenation using function
     list1.concatenate(list2);
     cout << "After concatenation (using function), List 1: ";
-    list1.display();
+    list1.print();
 
-    // Concatenate two lists using operator +
+    // Concatenation using overloaded + operator
     LinkedList<int> list3 = list1 + list2;
     cout << "After concatenation (using operator +), List 3: ";
-    list3.display();
+    list3.print();
 
-    // Reverse the list
+    // Reverse the concatenated list
     list3.reverse();
     cout << "Reversed List 3: ";
-    list3.display();
+    list3.print();
 
-    // Search for an element
-    int searchValue = 20;
-    if (list3.search(searchValue)) {
-        cout << "Element " << searchValue << " found in the list.\n";
+    // Search for an element in List 3
+    int key = 20;
+    if (list3.search(key)) {
+        cout << "Element " << key << " found in the list." << endl;
     } else {
-        cout << "Element " << searchValue << " not found in the list.\n";
+        cout << "Element " << key << " not found in the list." << endl;
     }
 
-    // Delete an element
+    // Remove an element from List 3
     list3.remove(20);
     cout << "After deleting 20, List 3: ";
-    list3.display();
+    list3.print();
 
     return 0;
 }
+
+//Output:
+// List 1: 10 -> 20 -> 30 -> NULL
+// List 2: 40 -> 50 -> NULL
+// After concatenation (using function), List 1: 10 -> 20 -> 30 -> 40 -> 50 -> NULL
+// After concatenation (using operator +), List 3: 10 -> 20 -> 30 -> 40 -> 50 -> 40 -> 50 -> NULL
+// Reversed List 3: 50 -> 40 -> 50 -> 40 -> 30 -> 20 -> 10 -> NULL
+// Element 20 found in the list.
+// After deleting 20, List 3: 50 -> 40 -> 50 -> 40 -> 30 -> 10 -> NULL
