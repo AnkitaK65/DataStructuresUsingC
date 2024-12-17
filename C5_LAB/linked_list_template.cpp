@@ -17,6 +17,28 @@ struct Node {
     T data;
     Node* next;
     Node(T val) : data(val), next(nullptr) {}
+    /*
+        Constructor: Initializes a Node with a given value
+        and sets the 'next' pointer to nullptr (indicating the end of the list initially)
+        1. Initializer list directly initializes members, avoiding default initialization followed by reassignment.
+        2. More efficient and preferred in modern C++ for cleaner, concise code.
+
+        Node(T val) 
+            : data(val), // Initializes 'data' with the value passed as 'val'
+            next(nullptr) // Sets 'next' pointer to nullptr (no next node yet)
+        {}
+    */
+
+   /* IT IS SAME AS -- 
+        Constructor: Initializes the members in the constructor body
+        1. Members are first default-initialized (for example, 'data' is uninitialized here).
+        2. Reassignment occurs after default initialization, making it less efficient.
+        
+        Node(T val) {
+            data = val;     // Assign the value 'val' to 'data'
+            next = nullptr; // Initialize the 'next' pointer to nullptr
+        }
+   */
 };
 
 // Linked List class
