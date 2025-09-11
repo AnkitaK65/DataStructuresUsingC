@@ -17,6 +17,15 @@ int fibonacci(int n) {
     return fibonacci(n - 1) + fibonacci(n - 2); // Two recursive calls
 }
 
+#include <stdio.h>
+
+// Recursive function to print Fibonacci series
+void printFibonacciSeries(int n, int a, int b) {
+    if (n == 0) return;   // base case
+    printf("%d ", a);
+    printFibonacciSeries(n - 1, b, a + b); // recursion prints next number
+}
+
 int main() {
     int n, i;
 
@@ -45,6 +54,11 @@ int main() {
         }
     }
     printf("\n");
+
+    printf("Fibonacci Series using pure recursion: ");
+    printFibonacciSeries(n, 0, 1);  // start with 0, 1
+
+    printf("\n");
     return 0;
 }
 
@@ -53,5 +67,6 @@ Output:
 Enter number of terms: 10
 
 Fibonacci Series using Recursion: 0 1 1 2 3 5 8 13 21 34 
-Fibonacci Series using Iteration: 0 1 1 2 3 5 8 13 21 34
+Fibonacci Series using Iteration: 0 1 1 2 3 5 8 13 21 34 
+Fibonacci Series using pure recursion: 0 1 1 2 3 5 8 13 21 34 
 */
